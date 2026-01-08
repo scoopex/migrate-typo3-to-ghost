@@ -2,6 +2,12 @@
 __pycache__/
 *.py[codz]
 *$py.class
+__pycache__/
+deprecated
+exported_ghost/
+exported_typo3/
+import_ghost/
+
 
 # C extensions
 *.so
