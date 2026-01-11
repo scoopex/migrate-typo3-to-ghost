@@ -77,7 +77,7 @@ if __name__ == "__main__":
                 record["feature_image"] = copy_and_normalize_image(record["feature_image"])
             if len(record["extra_images"]) > 0:
                 count_extra_images += 1
-                print(f"More than one image '{record["title"]}' ----> '{record['slug']}' : {record['extra_images']}")
+                print(f"More than one image '{record["title"]}' ----> '{record['slug']}' : {' '.join(record['extra_images'])}")
 
         print(f"We have {count_extra_images} record with more than one image")
         export_data_file = Path(temp_dir) / Path("import.json")
