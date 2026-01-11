@@ -167,7 +167,7 @@ class Presse(Post):
     def convert_bodytext(self, record: dict) -> str:
         result = self.cleanup_body(record)
         rubriken = ", ".join([x.capitalize() for x in self.tags])
-        result = f"<p></p><p>Kategorien: {rubriken}</p><p>{record["teaser"]}</p><p>{result}</p>"
+        result = f"<p>Kategorien: {rubriken}</p><p>{record["teaser"]}</p><p>{result}</p>"
         return result
 
 class PresseBuergerbeteiligung(Presse):
