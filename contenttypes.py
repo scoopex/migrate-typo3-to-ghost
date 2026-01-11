@@ -162,7 +162,7 @@ class Stellungnahme(Post):
         return result
 
 class Presse(Post):
-    tags = ["news", "presse"]
+    tags = ["presse", "news"]
     slug_prefix = "presse"
     def convert_bodytext(self, record: dict) -> str:
         result = self.cleanup_body(record)
@@ -171,23 +171,23 @@ class Presse(Post):
         return result
 
 class PresseBuergerbeteiligung(Presse):
-    tags = ["news", "presse", "buergerbeteiligung"]
+    tags = ["presse", "news", "buergerbeteiligung"]
     slug_prefix = "presse-buergerbeteiligung"
 
 class PresseEnergie(Presse):
-    tags = ["news", "presse", "energie"]
+    tags = ["presse", "news", "energie"]
     slug_prefix = "presse-energie"
 
 class PresseKinderundfamilien(Presse):
-    tags = ["news", "presse", "kinder-und-familien"]
+    tags = ["presse", "news", "kinder-und-familien"]
     slug_prefix = "presse-kinder-und-familien"
 
 class PresseOekologieundumwelt(Presse):
-    tags = ["news", "presse", "oekologie-und-umwelt"]
+    tags = ["presse", "news", "oekologie-und-umwelt"]
     slug_prefix = "presse-oekologie-und-umwelt"
 
 class PresseStadtplanung(Presse):
-    tags = ["news", "presse", "stadtplanung"]
+    tags = ["presse", "news", "stadtplanung"]
     slug_prefix = "presse-stadtplanung"
 
 class PresseVerkehr(Presse):
