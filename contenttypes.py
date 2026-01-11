@@ -84,8 +84,13 @@ class Post:
                 "tags": self.tagdata
             }
 
+            post.setdefault("extra_images", [])
             if "fal_media" in record and record["fal_media"] != "":
-                post["feature_image"] = record["fal_media"]
+                regex_split = re.compile(r',\s*')
+                images = regex_split.split(record["fal_media"])
+                post["feature_image"] = images[0]
+                if len(images) > 1:
+                    post["extra_images"] = images[1:]
 
             ghost_posts[f"{self.typo3_to_ghost_datetime(crdate)}-{slug}"] = post
 
@@ -122,18 +127,24 @@ class Post:
 
         return ghost_export
 
-class Antrag(Post):
-    tags = ["news", "antraege", "gemeinderat"]
-    slug_prefix = "antrag"
-
-    def convert_bodytext(self, record: dict) -> str:
+    def cleanup_body(self, record: dict) -> str:
         text = record["bodytext"]
         result = text.replace("\r\n", "")
         result = result.replace("\t", "")
         result = result.replace("\n", "")
         if len(result) == 0:
-            raise RuntimeError(f"Unable to convert content: {text}")
+            raise RuntimeError(f"Unable to convert content: {record}")
+            #print(f"Unable to convert content: {record["title"]}")
 
+        return result
+
+
+class Antrag(Post):
+    tags = ["news", "antraege", "gemeinderat"]
+    slug_prefix = "antrag"
+
+    def convert_bodytext(self, record: dict) -> str:
+        result = self.cleanup_body(record)
         g_date = self.typo3_to_german_date(record["crdate"])
         result = f"<p>Publikationsdatum {g_date}</p><p>{record["teaser"]}</p><p>{result}</p>"
 
@@ -142,16 +153,51 @@ class Antrag(Post):
 class Stellungnahme(Post):
     tags = ["news", "stellungnahmen", "gemeinderat"]
     slug_prefix = "stellungnahme"
-
     def convert_bodytext(self, record: dict) -> str:
-        text = record["bodytext"]
-        result = text.replace("\r\n", "")
-        result = result.replace("\t", "")
-        result = result.replace("\n", "")
-        if len(result) == 0:
-            raise RuntimeError(f"Unable to convert content: {text}")
+        result = self.cleanup_body(record)
 
         g_date = self.typo3_to_german_date(record["crdate"])
         result = f"<p>Publikationsdatum {g_date}</p><p>{record["teaser"]}</p><p>{result}</p>"
 
         return result
+
+class Presse(Post):
+    tags = ["news", "presse"]
+    slug_prefix = "presse"
+    def convert_bodytext(self, record: dict) -> str:
+        result = self.cleanup_body(record)
+        rubriken = ", ".join([x.capitalize() for x in self.tags])
+        result = f"<p></p><p>Kategorien: {rubriken}</p><p>{record["teaser"]}</p><p>{result}</p>"
+        return result
+
+class PresseBuergerbeteiligung(Presse):
+    tags = ["news", "presse", "buergerbeteiligung"]
+    slug_prefix = "presse-buergerbeteiligung"
+
+class PresseEnergie(Presse):
+    tags = ["news", "presse", "energie"]
+    slug_prefix = "presse-energie"
+
+class PresseKinderundfamilien(Presse):
+    tags = ["news", "presse", "kinder-und-familien"]
+    slug_prefix = "presse-kinder-und-familien"
+
+class PresseOekologieundumwelt(Presse):
+    tags = ["news", "presse", "oekologie-und-umwelt"]
+    slug_prefix = "presse-oekologie-und-umwelt"
+
+class PresseStadtplanung(Presse):
+    tags = ["news", "presse", "stadtplanung"]
+    slug_prefix = "presse-stadtplanung"
+
+class PresseVerkehr(Presse):
+    tags = ["news", "presse", "verkehr"]
+    slug_prefix = "presse-verkehr"
+
+class PresseWeiterethemen(Presse):
+    tags = ["news", "presse", "weitere-themen"]
+    slug_prefix = "presse-weitere-themen"
+
+class PresseWirtschaftundfinanzen(Presse):
+    tags = ["news", "presse", "wirtschaft-und-finanzen"]
+    slug_prefix = "presse-wirtschaft-und-finanzen"
